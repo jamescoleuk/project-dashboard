@@ -20,33 +20,7 @@ It provides:
 It's designed to feel like =emacs-dashboard= but scoped to your current project.
 
 ** Screenshot
-
-#+BEGIN_EXAMPLE
-                              jc
-                        ~/dev/arwen/jc/
-
- Git: sqs_replay (g)
-     unstaged M services/Cargo.lock
-     unstaged M services/libs/fetcher/src/lib.rs
-     unstaged M services/libs/graphql/src/state.rs
-
-    0 staged, 7 unstaged, 18 untracked   ...more
-
- Recent Files: (r)
-    1  services/libs/screenshot/src/screenshot_service.rs
-    2  services/libs/db/src/jobs/job_service.rs
-    3  services/libs/db/src/user/user_model.rs
-    4  arwen-database-model.mwb
-
- Quick Actions: (a)
-    f  Find file - C-c p f
-    s  Search (ripgrep) - C-c s
-    m  Magit status - C-x g
-    d  Dired - C-x d
-    e  Eshell - C-c p e
-
-                        q quit  R refresh
-#+END_EXAMPLE
+[[./screenshot01.png][A screenshot of project-dashboard.el, showing the features described here]]
 
 ** Features
 
