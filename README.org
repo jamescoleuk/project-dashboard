@@ -1,0 +1,194 @@
+#+TITLE: project-dashboard.el
+#+AUTHOR: James Cole
+#+DESCRIPTION: A project-specific dashboard for Emacs
+
+* Project dashboard
+
+A landing page for your projects, inspired by =emacs-dashboard.el=. It shows recent changes, files you've been working on, and quick actions. It supports =.project.el= for metadata (e.g. name and description).
+
+** But why?
+
+I really like =emacs-dashboard=. I got rid of the quotes, and the header image, but boy is it functional! I find myself switching projects a lot. Initially I used =project.el='s switching menu. This displays in the mini-buffer and gives you options like find file, dired, and ripgrep. This was great, but more often than not I stared at the frame for a bit wondering where my project was, before I remembered to look in the mini-buffer.
+
+What I wanted was something like =emacs-dashboard= but project-aware, which I I don't think =emacs-dashboard= is. Hopefully =project-dashboard= will fill that gap.
+
+It provides:
+- Git status at a glance (branch, staged/unstaged/untracked files)
+- Recent files /in that specific project/
+- Quick actions with keyboard shortcuts
+
+It's designed to feel like =emacs-dashboard= but scoped to your current project.
+
+** Screenshot
+
+#+BEGIN_EXAMPLE
+                              jc
+                        ~/dev/arwen/jc/
+
+ Git: sqs_replay (g)
+     unstaged M services/Cargo.lock
+     unstaged M services/libs/fetcher/src/lib.rs
+     unstaged M services/libs/graphql/src/state.rs
+
+    0 staged, 7 unstaged, 18 untracked   ...more
+
+ Recent Files: (r)
+    1  services/libs/screenshot/src/screenshot_service.rs
+    2  services/libs/db/src/jobs/job_service.rs
+    3  services/libs/db/src/user/user_model.rs
+    4  arwen-database-model.mwb
+
+ Quick Actions: (a)
+    f  Find file - C-c p f
+    s  Search (ripgrep) - C-c s
+    m  Magit status - C-x g
+    d  Dired - C-x d
+    e  Eshell - C-c p e
+
+                        q quit  R refresh
+#+END_EXAMPLE
+
+** Features
+
+- Git status overview
+- Recent files in this project
+- Quick actions, e.g. find a file
+- Keyboard-driven
+- Cool icons if you want
+- Supports =.project.el= for custom name and description
+
+** Installation
+
+*** Dependencies
+
+*Required:*
+- =magit= - for git integration
+- =nerd-icons= - for file and section icons
+
+*Optional:*
+- =consult= - for =consult-ripgrep= (falls back to =project-find-regexp=)
+
+*** Manual Installation
+
+1. Copy =project-dashboard.el= to your load path:
+
+   #+BEGIN_SRC elisp
+   (add-to-list 'load-path "~/.emacs.d/lisp")
+   (require 'project-dashboard)
+   #+END_SRC
+
+2. Set it as the default action when switching projects:
+
+   #+BEGIN_SRC elisp
+   (setq project-switch-commands #'project-dashboard-switch)
+   #+END_SRC
+
+3. Optionally, bind keys for manual access:
+
+   #+BEGIN_SRC elisp
+   (with-eval-after-load 'project
+     (define-key project-prefix-map (kbd "p") #'project-dashboard-open)
+     (define-key project-prefix-map (kbd "P") #'project-dashboard-open-frame))
+   #+END_SRC
+
+*** With use-package
+
+#+BEGIN_SRC elisp
+(use-package project-dashboard
+  :load-path "~/.emacs.d/lisp"
+  :after (project magit nerd-icons)
+  :config
+  (setq project-switch-commands #'project-dashboard-switch)
+  (with-eval-after-load 'project
+    (define-key project-prefix-map (kbd "p") #'project-dashboard-open)))
+#+END_SRC
+
+** Usage
+
+*** Switching projects
+
+With the configuration above, =C-x p p= will:
+1. Prompt you to select a project
+2. Open the project dashboard for that project
+
+*** Keyboard Shortcuts
+
+In the dashboard buffer:
+
+| Key               | Action                        |
+|-------------------+-------------------------------|
+| =1= - =9=         | Open recent file 1-9          |
+| =f=               | Find file in project          |
+| =s=               | Search (ripgrep or regexp)    |
+| =m=               | Magit status                  |
+| =d=               | Dired                         |
+| =e=               | Eshell                        |
+| =g=               | Magit status (git section)    |
+| =r=               | Jump to Recent Files section  |
+| =a=               | Jump to Quick Actions section |
+| =n= / =C-n= / =↓= | Next item                     |
+| =p= / =C-p= / =↑= | Previous item                 |
+| =RET=             | Activate item at point        |
+| =R=               | Refresh dashboard             |
+| =q=               | Quit                          |
+
+*** Interactive Commands
+
+- =project-dashboard-open= - Prompt for project, open dashboard
+- =project-dashboard-open-frame= - Same, but in a new frame
+- =project-dashboard-current= - Dashboard for current project
+- =project-dashboard-switch= - For use with =project-switch-commands=
+
+** Customization
+
+*** Variables
+
+#+BEGIN_SRC elisp
+;; Number of recent files to show (default: 10)
+(setq project-dashboard-recent-files-limit 10)
+
+;; Number of git changed files to show (default: 5)
+(setq project-dashboard-git-files-limit 5)
+
+;; Buffer name (default: "*project-dashboard*")
+(setq project-dashboard-buffer-name "*project-dashboard*")
+#+END_SRC
+
+*** Faces
+
+- =project-dashboard-heading= - Section headings
+- =project-dashboard-title= - Project name title
+
+Customize with =M-x customize-face= or in your config:
+
+#+BEGIN_SRC elisp
+(set-face-attribute 'project-dashboard-heading nil
+                    :foreground "#b58900"
+                    :weight 'bold)
+#+END_SRC
+
+*** Project Metadata (.project.el)
+
+Create a =.project.el= file in your project root to customize the display:
+
+#+BEGIN_SRC elisp
+(:name "My Awesome Project"
+ :description "A short description"
+ :main "src/main.el")
+#+END_SRC
+
+- =:name= - Display name (instead of directory name)
+- =:description= - Displayed under the name on the dashboard
+- =:main= - Main file to open (used by other project functions)
+
+** Integration with emacs-dashboard
+
+If you use =emacs-dashboard= for your startup screen, you can make clicking on projects open project-dashboard:
+
+#+BEGIN_SRC elisp
+(setq dashboard-projects-switch-function #'project-dashboard-create)
+#+END_SRC
+
+** License
+
+GPL-3.0-or-later
