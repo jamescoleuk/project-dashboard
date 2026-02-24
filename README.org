@@ -20,7 +20,7 @@ It provides:
 It's designed to feel like =emacs-dashboard= but scoped to your current project.
 
 ** Screenshot
-[[./screenshot01.png][A screenshot of project-dashboard.el, showing the features described here]]
+[[file:screenshot01.png]]
 
 ** Features
 
