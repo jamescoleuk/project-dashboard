@@ -4,7 +4,7 @@
 
 * Project dashboard
 
-A landing page for your projects, inspired by =emacs-dashboard.el=. It shows recent changes, files you've been working on, and quick actions. It supports =.project.el= for metadata (e.g. name and description).
+A landing page for your projects, inspired by [[https://github.com/emacs-dashboard/emacs-dashboard][emacs-dashboard.el]]. It shows recent changes, files you've been working on, and quick actions. It supports =.project.el= for metadata (e.g. name and description).
 
 ** But why?
 
