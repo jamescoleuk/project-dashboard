@@ -8,16 +8,13 @@ A landing page for your projects, inspired by [[https://github.com/emacs-dashboa
 
 ** But why?
 
-I really like =emacs-dashboard=. I got rid of the quotes, and the header image, but boy is it functional! I find myself switching projects a lot. Initially I used =project.el='s switching menu. This displays in the mini-buffer and gives you options like find file, dired, and ripgrep. This was great, but more often than not I stared at the frame for a bit wondering where my project was, before I remembered to look in the mini-buffer.
+I use =emacs-dashboard= a lot. I got rid of the quotes at the bottom, and the emacs logo at the top, and it's neat and fast and very useful, particularly for loading projects.
 
-What I wanted was something like =emacs-dashboard= but project-aware, which I I don't think =emacs-dashboard= is. Hopefully =project-dashboard= will fill that gap.
+I used =project-switch-commands= when switching projects. That looks like this:
 
-It provides:
-- Git status at a glance (branch, staged/unstaged/untracked files)
-- Recent files /in that specific project/
-- Quick actions with keyboard shortcuts
+[[file:screenshot02.png]]
 
-It's designed to feel like =emacs-dashboard= but scoped to your current project.
+This is pretty useful but for some reason I kept not noticing it down there, and I'd stare at the frame and wonder why my project hadn't switched. That was when I realised I wanted =emacs-dashboard= but for my projects. I couldn't find a way to do that (someone please set me straight if I'm wrong here), so I started working on this. It's designed to feel like =emacs-dashboard= but scoped to your current project.
 
 ** Screenshot
 [[file:screenshot01.png]]
@@ -42,7 +39,7 @@ It's designed to feel like =emacs-dashboard= but scoped to your current project.
 *Optional:*
 - =consult= - for =consult-ripgrep= (falls back to =project-find-regexp=)
 
-*** Manual Installation
+*** Manual installation
 
 1. Copy =project-dashboard.el= to your load path:
 
@@ -65,7 +62,7 @@ It's designed to feel like =emacs-dashboard= but scoped to your current project.
      (define-key project-prefix-map (kbd "P") #'project-dashboard-open-frame))
    #+END_SRC
 
-*** With use-package
+*** With =use-package=
 
 #+BEGIN_SRC elisp
 (use-package project-dashboard
@@ -85,7 +82,7 @@ With the configuration above, =C-x p p= will:
 1. Prompt you to select a project
 2. Open the project dashboard for that project
 
-*** Keyboard Shortcuts
+*** Keyboard shortcuts
 
 In the dashboard buffer:
 
@@ -106,7 +103,7 @@ In the dashboard buffer:
 | =R=               | Refresh dashboard             |
 | =q=               | Quit                          |
 
-*** Interactive Commands
+*** Interactive commands
 
 - =project-dashboard-open= - Prompt for project, open dashboard
 - =project-dashboard-open-frame= - Same, but in a new frame
@@ -141,7 +138,7 @@ Customize with =M-x customize-face= or in your config:
                     :weight 'bold)
 #+END_SRC
 
-*** Project Metadata (.project.el)
+*** Project metadata (.project.el)
 
 Create a =.project.el= file in your project root to customize the display:
 
