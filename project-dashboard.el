@@ -84,6 +84,10 @@
   "Number of changed files to show in git status."
   :type 'integer)
 
+(defcustom project-dashboard-center-content t
+  "If non-nil, center all dashboard content horizontally in the window."
+  :type 'boolean)
+
 ;;; Internal variables
 
 (defvar-local project-dashboard--root nil
@@ -205,6 +209,27 @@ Resolves symlinks to find the file."
          (padding (max 0 (/ (- width (length text)) 2))))
     (insert (make-string padding ?\s) text)))
 
+(defun project-dashboard--center-buffer-content ()
+  "Add left padding to all lines so the content block appears centered.
+Finds the widest non-blank line and pads all lines uniformly."
+  (save-excursion
+    (let ((max-width 0))
+      ;; Find the widest line (using string-width for proper char width)
+      (goto-char (point-min))
+      (while (not (eobp))
+        (let ((line-len (string-width (buffer-substring
+                                       (line-beginning-position)
+                                       (line-end-position)))))
+          (when (> line-len max-width)
+            (setq max-width line-len)))
+        (forward-line 1))
+      ;; Calculate padding and prepend to every line
+      (let ((padding (make-string (max 0 (/ (- (window-width) max-width) 2)) ?\s)))
+        (goto-char (point-min))
+        (while (not (eobp))
+          (insert padding)
+          (forward-line 1))))))
+
 (defun project-dashboard--icon (name &optional face)
   "Return icon for NAME with optional FACE, or empty string if unavailable."
   (if (and (fboundp 'nerd-icons-mdicon) (display-graphic-p))
@@ -322,15 +347,12 @@ The dashboard can be refreshed with \\`R' or `\\[revert-buffer]'."
         ;; === Title ===
         ;; Two newlines for visual spacing at top
         (insert "\n\n")
-        (project-dashboard--insert-centered
-         (propertize project-name 'face 'project-dashboard-title))
+        (insert (propertize project-name 'face 'project-dashboard-title))
         (insert "\n")
-        (project-dashboard--insert-centered
-         (propertize (abbreviate-file-name root) 'face 'shadow))
+        (insert (propertize (abbreviate-file-name root) 'face 'shadow))
         (when-let* ((desc (plist-get meta :description)))
           (insert "\n")
-          (project-dashboard--insert-centered
-           (propertize desc 'face 'font-lock-comment-face)))
+          (insert (propertize desc 'face 'font-lock-comment-face)))
         (insert "\n")
 
         ;; === Git Status Section ===
@@ -530,9 +552,12 @@ The dashboard can be refreshed with \\`R' or `\\[revert-buffer]'."
         ;; === Footer ===
         ;; Two newlines for visual separation
         (insert "\n\n")
-        (project-dashboard--insert-centered
-         (propertize "q quit  R refresh" 'face 'shadow))
+        (insert (propertize "q quit  R refresh" 'face 'shadow))
         (insert "\n")
+
+        ;; Center all content if enabled
+        (when project-dashboard-center-content
+          (project-dashboard--center-buffer-content))
 
         ;; Position cursor below title (skip 2 blank lines)
         (goto-char (point-min))
